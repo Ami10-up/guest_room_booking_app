@@ -6,7 +6,8 @@ REM Change these variables as needed or set environment variables before calling
 set NGROK_PORT=3000
 set NGROK_REGION=us
 REM Optional: set NGROK_SUBDOMAIN if you have a paid plan and reserved domain
-set NGROK_SUBDOMAIN=
+REM For your reserved hostname, set it here so ngrok uses the permanent domain.
+set NGROK_SUBDOMAIN=determinatively-humpiest-lannie.ngrok-free.dev
 
 cd /d "%~dp0\..\"
 echo Starting ngrok tunnel for localhost:%NGROK_PORT%

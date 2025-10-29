@@ -3,9 +3,6 @@
 import 'package:atithi_bhavan_mobile/models/app_models.dart';
 import 'package:atithi_bhavan_mobile/services/api_service.dart';
 import 'package:flutter/material.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
 class BookingFormScreen extends StatefulWidget {
   final String token;
@@ -208,7 +205,7 @@ class _BookingFormScreenState extends State<BookingFormScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<ReasonForVisit>(
-                value: _selectedReason,
+                initialValue: _selectedReason,
                 decoration: const InputDecoration(labelText: 'Reason for Visit', prefixIcon: Icon(Icons.info)),
                 items: ReasonForVisit.values.map((r) => DropdownMenuItem(value: r, child: Text(r.displayName))).toList(),
                 onChanged: (val) => setState(() => _selectedReason = val),

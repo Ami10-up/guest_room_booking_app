@@ -93,7 +93,10 @@ const OccupancyDashboard = () => {
                                         booking.allottedRoomNumbers.includes(room.name);
                 if (isRoomInBooking) {
                     if (dateString >= booking.dateFrom && dateString < booking.dateTo) {
-                        return { status: booking.status, guestName: booking.guestName };
+                        // If booking is still pending (not yet allotted/approved), do not reveal the guest name
+                        // in the occupancy calendar. Only show the guest name for approved or other non-pending statuses.
+                        const guestName = booking.status === 'pending' ? null : booking.guestName;
+                        return { status: booking.status, guestName };
                     }
                 }
             }

@@ -8,7 +8,7 @@ import 'package:atithi_bhavan_mobile/models/app_models.dart';
 class ApiService {
   // IMPORTANT: Base URL can be overridden at runtime using --dart-define=BASE_URL=<url>
   // Default kept as a fallback for local development.
-  static const String _defaultBaseUrl = 'https://306ee0978f6e.ngrok-free.app';
+  static const String _defaultBaseUrl = 'https://determinatively-humpiest-lannie.ngrok-free.dev';
   final String _baseUrl = const String.fromEnvironment('BASE_URL', defaultValue: _defaultBaseUrl);
 
   // Shared headers for all API calls.

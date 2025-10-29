@@ -51,7 +51,7 @@ class _BookingStatusCardState extends State<BookingStatusCard> {
   @override
   Widget build(BuildContext context) {
     final booking = widget.booking;
-    final String guestHouseName = booking.formData['guestHouseName'] ?? booking.formData['guest_room_name'] ?? 'Booking Details';
+  final String guestHouseName = booking.formData['guestHouseName'] ?? booking.formData['guest_room_name'] ?? 'Booking Details';
     final bool isApproved = booking.status == 'approved';
     final bool isPending = booking.status == 'pending';
     final bool isRejected = booking.status == 'rejected';
@@ -68,7 +68,8 @@ class _BookingStatusCardState extends State<BookingStatusCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(guestHouseName, booking),
+            // Do not show the guest house name when booking is still pending (not allotted/approved)
+            _buildHeader(isPending ? 'Booking Details' : guestHouseName, booking),
             const Divider(height: 24),
             _buildBookingInfo(booking),
             if (hasRemarks) _buildRemarksInfo(remarks),
