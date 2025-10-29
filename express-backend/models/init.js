@@ -1,16 +1,21 @@
 const db = require('../db/database');
 
 // User/Admin table
-const userTable = `CREATE TABLE IF NOT EXISTS users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  fullName TEXT NOT NULL,
-  rank TEXT,
-  idNo TEXT UNIQUE NOT NULL,
-  username TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  contactNo TEXT,
-  presentAppointment TEXT,
-  role TEXT NOT NULL CHECK(role IN ('user', 'admin'))
+const createUsersTable = `
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    fullName TEXT NOT NULL,
+    rank TEXT,
+    idNo TEXT NOT NULL UNIQUE,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    contactNo TEXT,
+    presentAppointment TEXT,
+    role TEXT NOT NULL DEFAULT 'user',
+    -- --- THIS IS THE CRITICAL FIX ---
+    -- Add the two new columns to the table schema
+    securityQuestion TEXT,
+    securityAnswer TEXT
 );`;
 
 db.run(userTable);

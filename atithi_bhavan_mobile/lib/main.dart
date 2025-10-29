@@ -1,121 +1,139 @@
+// lib/main.dart
+// import 'package:atithi_bhavan_mobile/screens/admin_dashboard_screen.dart';
+// import 'package.atithi_bhavan_mobile/screens/admin_login_screen.dart';
+import 'package:atithi_bhavan_mobile/screens/login_screen.dart';
+import 'package:atithi_bhavan_mobile/screens/registration_screen.dart';
+import 'package:atithi_bhavan_mobile/screens/splash_screen.dart';
+// We no longer import user_dashboard_screen here because it's not accessed via a static route.
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
-import 'screens/register_screen.dart';
-import 'screens/booking_screen.dart';
-import 'screens/booking_status_screen.dart';
-import 'screens/admin_login_screen.dart';
-import 'screens/admin_dashboard_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async {
+  // Load environment variables from .env.development by default.
+  try {
+    await dotenv.load(fileName: ".env.development");
+  } catch (e) {
+    // If the environment file is missing or fails to load, proceed with defaults.
+    // This prevents an unhandled exception during app startup.
+    // You can log or show this during development for visibility.
+    // ignore: avoid_print
+    print('Warning: .env.development not found or failed to load: $e');
+  }
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Atithi Bhavan',
+      title: 'Abhyagat',
+      debugShowCheckedModeBanner: false,
+      // In lib/main.dart, inside the MyApp class -> build method
+
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      initialRoute: '/login',
-      routes: {
-        '/login': (context) => const LoginScreen(),
-        '/register': (context) => const RegisterScreen(),
-        '/booking': (context) => const BookingScreen(),
-        '/booking-status': (context) => const BookingStatusScreen(),
-        '/admin-login': (context) => const AdminLoginScreen(),
-        '/admin-dashboard': (context) => const AdminDashboardScreen(),
-      },
-    );
-  }
-}
+        brightness: Brightness.dark,
+        primaryColor: const Color(0xFF2C3E50),
+        scaffoldBackgroundColor: const Color(0xFF1E2A38),
+        
+        // Use a color scheme for more consistent coloring
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF3498DB), // A brighter blue for accents
+          secondary: Color(0xFF3498DB),
+          surface: Color(0xFF2C3E50), // Color of cards, dialogs, etc.
+        ),
+        
+        textTheme: const TextTheme(
+          // This styles the text the user types
+          titleMedium: TextStyle(color: Colors.white), 
+        ),
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF34495E),
+          elevation: 4,
+        ),
+        
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF3498DB),
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+          ),
+        ),
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+        // --- THIS IS THE CORRECTED AND ENHANCED THEME for input fields ---
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFF2C3E50),
+          
+          // Style for the label text (e.g., "Full Name") when it's floating above
+          labelStyle: TextStyle(color: Colors.grey.shade400),
+          
+          // Style for helper text or error text
+          helperStyle: TextStyle(color: Colors.grey.shade400),
+          
+          // --- FIX: Make icons white ---
+          prefixIconColor: Colors.white70,
+          
+          // Define the border styles
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey.shade700),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Color(0xFF3498DB), width: 2),
+          ),
+        ),
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+        // --- FIX: Theme for Dropdown Menus ---
+        dropdownMenuTheme: DropdownMenuThemeData(
+          inputDecorationTheme: InputDecorationTheme(
+            labelStyle: TextStyle(color: Colors.grey.shade400),
+            filled: true,
+            fillColor: const Color(0xFF2C3E50),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
             ),
-          ],
+          )
+        ),
+
+        // --- FIX: Theme for Date Picker Buttons ---
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.white, // Make the text inside TextButtons white
+          )
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+
+// ... (rest of the MaterialApp)
+
+      // The app will always start on the splash screen.
+      initialRoute: '/splash',
+
+      // These are the static routes that do not require any data to be passed.
+      routes: {
+        '/splash': (context) => const SplashScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegistrationScreen(),
+        
+        // --- THE '/home' ROUTE HAS BEEN REMOVED ---
+        // Navigation to the UserHomeScreen is now handled dynamically
+        // by the LoginScreen after a successful login. This is because
+        // the UserHomeScreen requires user data and a token, which
+        // are not available at app startup.
+
+        // Admin routes can remain static if they don't need initial data.
+        // '/adminLogin': (context) => const AdminLoginScreen(),
+        // '/adminDashboard': (context) => const AdminDashboardScreen(),
+      },
     );
   }
 }
