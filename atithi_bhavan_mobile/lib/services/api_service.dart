@@ -196,4 +196,18 @@ class ApiService {
       return null;
     }
   }
+
+  Future<Map<String, dynamic>?> getCategoryDetails(int categoryId, String token) async {
+    final uri = Uri.parse('$_baseUrl/api/categories/$categoryId');
+    try {
+      final authHeaders = {..._headers, 'Authorization': 'Bearer $token'};
+      final response = await http.get(uri, headers: authHeaders);
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        return json.decode(response.body);
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 }

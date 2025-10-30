@@ -65,9 +65,11 @@ const AllotmentModal = ({ booking, allCategories, onApprove, onCancel }) => {
         setSelectedRooms(newSelection);
     };
 
+    const [adminRemarks, setAdminRemarks] = useState('');
+
     const handleApproveClick = () => {
         if (selectedRooms.length > 0) {
-            onApprove(booking.id, 'approved', selectedRooms, selectedCategoryId);
+            onApprove(booking.id, 'approved', selectedRooms, selectedCategoryId, adminRemarks);
         }
     };
 
@@ -120,6 +122,17 @@ const AllotmentModal = ({ booking, allCategories, onApprove, onCancel }) => {
                         ) : ( <p>No rooms are available in this guest house for the selected dates.</p> )}
                     </div>
                 )}
+                <div className="input-group">
+                    <label htmlFor="admin-remarks">Enter remarks for user (optional)</label>
+                    <textarea
+                        id="admin-remarks"
+                        value={adminRemarks}
+                        placeholder="Optional message to the user"
+                        onChange={(e) => setAdminRemarks(e.target.value)}
+                        rows={3}
+                        style={{ width: '100%', resize: 'vertical' }}
+                    />
+                </div>
                 
                 <div className="modal-actions">
                     <button type="button" onClick={onCancel} className="cancel-btn">Cancel</button>

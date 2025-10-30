@@ -150,7 +150,7 @@ exports.updateStatus = (req, res) => {
   // --- END DEBUG LOGGING ---
 
   const { id } = req.params;
-  const { status, allottedRoomNumbers, guestRoomCategoryId } = req.body;
+  const { status, allottedRoomNumbers, guestRoomCategoryId, adminComments } = req.body;
   const adminId = req.user.id;
 
   if (!status) {
@@ -164,8 +164,9 @@ exports.updateStatus = (req, res) => {
     if (!allottedRoomNumbers || !guestRoomCategoryId) {
       return res.status(400).json({ message: "Room allotment and category are required to approve." });
     }
-    sql += ', allottedRoomNumbers = ?, guestRoomCategoryId = ?';
-    params.push(allottedRoomNumbers.join(', '), guestRoomCategoryId);
+    // Include adminComments (nullable)
+    sql += ', allottedRoomNumbers = ?, guestRoomCategoryId = ?, adminComments = ?';
+    params.push(allottedRoomNumbers.join(', '), guestRoomCategoryId, adminComments || null);
   }
   sql += ' WHERE id = ?';
   params.push(id);

@@ -19,7 +19,8 @@ const createCategoriesTable = `
 CREATE TABLE IF NOT EXISTS guest_room_categories (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE,
-    allowedRank TEXT NOT NULL
+    allowedRank TEXT NOT NULL,
+    locationUrl TEXT
 );`;
 
 const createRoomsTable = `
@@ -54,6 +55,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     status TEXT NOT NULL DEFAULT 'pending',
     allottedRoomNumbers TEXT,
     adminId INTEGER,
+    adminComments TEXT,
     FOREIGN KEY (userId) REFERENCES users (id),
     FOREIGN KEY (guestRoomCategoryId) REFERENCES guest_room_categories (id)
 );`;
@@ -65,6 +67,32 @@ db.serialize(() => {
     db.run(createCategoriesTable, (err) => { if (err) console.error("Error creating categories table:", err.message); else console.log("Categories table is ready."); });
     db.run(createRoomsTable, (err) => { if (err) console.error("Error creating rooms table:", err.message); else console.log("Rooms table is ready."); });
     db.run(createBookingsTable, (err) => { if (err) console.error("Error creating bookings table:", err.message); else console.log("Bookings table is ready."); });
+    // Migration: add 'adminComments' column to bookings table if it doesn't exist (safe for existing DBs)
+    db.all("PRAGMA table_info(bookings)", [], (err, cols) => {
+        if (!err && cols) {
+            const hasAdminComments = cols.some(c => c.name === 'adminComments');
+            if (!hasAdminComments) {
+                console.log("Adding missing 'adminComments' column to bookings table...");
+                db.run("ALTER TABLE bookings ADD COLUMN adminComments TEXT", (alterErr) => {
+                    if (alterErr) console.error("Failed to add adminComments column:", alterErr.message);
+                    else console.log("adminComments column added successfully.");
+                });
+            }
+        }
+    });
+    // Migration: add 'locationUrl' column to categories table if it doesn't exist (safe for existing DBs)
+    db.all("PRAGMA table_info(guest_room_categories)", [], (err, cols) => {
+        if (!err && cols) {
+            const hasLocation = cols.some(c => c.name === 'locationUrl');
+            if (!hasLocation) {
+                console.log("Adding missing 'locationUrl' column to guest_room_categories table...");
+                db.run("ALTER TABLE guest_room_categories ADD COLUMN locationUrl TEXT", (alterErr) => {
+                    if (alterErr) console.error("Failed to add locationUrl column:", alterErr.message);
+                    else console.log("locationUrl column added successfully.");
+                });
+            }
+        }
+    });
 
     db.get("SELECT COUNT(*) as count FROM guest_room_categories", (err, row) => {
         if (row && row.count === 0) {

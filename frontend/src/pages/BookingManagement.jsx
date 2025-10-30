@@ -42,7 +42,7 @@ const BookingManagement = () => {
 
     // In src/pages/BookingManagement.jsx
 
-const handleUpdateStatus = async (bookingId, status, allottedRoomNumbers = null, guestRoomCategoryId = null) => {
+const handleUpdateStatus = async (bookingId, status, allottedRoomNumbers = null, guestRoomCategoryId = null, adminComments = null) => {
     // --- START DEBUG LOGGING ---
     console.log("--- handleUpdateStatus called ---");
     console.log("Booking ID:", bookingId);
@@ -56,7 +56,8 @@ const handleUpdateStatus = async (bookingId, status, allottedRoomNumbers = null,
         const payload = {
             status,
             allottedRoomNumbers,
-            guestRoomCategoryId
+            guestRoomCategoryId,
+            adminComments
         };
         await apiClient.put(`/bookings/${bookingId}/status`, payload);
         fetchData(); 

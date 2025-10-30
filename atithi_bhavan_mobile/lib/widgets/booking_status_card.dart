@@ -2,6 +2,7 @@
 
 import 'package:atithi_bhavan_mobile/models/app_models.dart';
 import 'package:atithi_bhavan_mobile/services/api_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 
 class BookingStatusCard extends StatefulWidget {
@@ -24,6 +25,7 @@ class BookingStatusCard extends StatefulWidget {
 
 class _BookingStatusCardState extends State<BookingStatusCard> {
   Map<String, dynamic>? _managerDetails;
+  String? _categoryLocationUrl;
   bool _isLoadingManager = false;
 
   @override
@@ -40,9 +42,12 @@ class _BookingStatusCardState extends State<BookingStatusCard> {
       widget.booking.formData['guestRoomCategoryId'],
       widget.token,
     );
+    // Also fetch category details (to obtain location URL)
+    final category = await ApiService().getCategoryDetails(widget.booking.formData['guestRoomCategoryId'], widget.token);
     if (mounted) {
       setState(() {
         _managerDetails = details;
+        _categoryLocationUrl = category != null ? (category['locationUrl'] as String?) : null;
         _isLoadingManager = false;
       });
     }
@@ -229,6 +234,40 @@ class _BookingStatusCardState extends State<BookingStatusCard> {
                         icon: Icons.phone_in_talk,
                         label: 'Manager Contact',
                         value: _managerDetails?['managerContact'] ?? 'N/A'),
+                    const SizedBox(height: 8),
+                    // Guest Room Location link (if available)
+                    if (_categoryLocationUrl != null && _categoryLocationUrl!.isNotEmpty)
+                      Row(
+                        children: [
+                          Icon(Icons.location_on, size: 16, color: Colors.black54),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: TextButton.icon(
+                              onPressed: () async {
+                                final uri = Uri.tryParse(_categoryLocationUrl!);
+                                if (uri != null) {
+                                  try {
+                                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Could not open location.')));
+                                  }
+                                }
+                              },
+                              icon: const Icon(Icons.map, size: 16),
+                              label: const Text('Guest Room Location', style: TextStyle(color: Colors.black)),
+                              style: TextButton.styleFrom(alignment: Alignment.centerLeft),
+                            ),
+                          ),
+                        ],
+                      ),
+                    const SizedBox(height: 8),
+                    // Admin Comments (if any)
+                    if (booking.formData['adminComments'] != null && (booking.formData['adminComments'] as String).isNotEmpty)
+                      _buildApprovedInfoRow(
+                        icon: Icons.comment,
+                        label: 'Admin Comments',
+                        value: booking.formData['adminComments'] as String,
+                      ),
                   ],
                 ),
         ],

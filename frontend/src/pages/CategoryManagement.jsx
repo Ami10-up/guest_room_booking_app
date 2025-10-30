@@ -82,6 +82,7 @@ const CategoryManagement = () => {
                     <tr>
                         <th>ID</th>
                         <th>Category Name</th>
+                        <th>Location</th>
                         <th>Allowed Rank</th>
                         <th>Actions</th>
                     </tr>
@@ -91,6 +92,7 @@ const CategoryManagement = () => {
                         <tr key={category.id}>
                             <td>{category.id}</td>
                             <td>{category.name}</td>
+                            <td>{category.locationUrl ? (<a href={category.locationUrl} target="_blank" rel="noreferrer">Open</a>) : 'N/A'}</td>
                             <td>{category.allowedRank}</td>
                             <td>
                                 <div className="action-buttons">

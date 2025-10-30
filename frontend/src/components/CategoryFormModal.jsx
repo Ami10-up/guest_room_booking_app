@@ -6,6 +6,7 @@ const CategoryFormModal = ({ category, onSave, onCancel }) => {
     // 'category' is null for 'add', an object for 'edit'
     const [name, setName] = useState(category ? category.name : '');
     const [allowedRank, setAllowedRank] = useState(category ? category.allowedRank : 'Officer');
+    const [locationUrl, setLocationUrl] = useState(category ? category.locationUrl || '' : '');
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -13,6 +14,7 @@ const CategoryFormModal = ({ category, onSave, onCancel }) => {
             id: category ? category.id : null, // Include ID if editing
             name,
             allowedRank,
+            locationUrl: locationUrl && locationUrl.length ? locationUrl : null,
         });
     };
 
@@ -44,6 +46,16 @@ const CategoryFormModal = ({ category, onSave, onCancel }) => {
                             <option value="JCO">JCO</option>
                             <option value="OR">OR</option>
                         </select>
+                    </div>
+                    <div className="input-group">
+                        <label htmlFor="location">Guest Room Location (Google Maps URL)</label>
+                        <input
+                            type="url"
+                            id="location"
+                            value={locationUrl}
+                            placeholder="https://maps.google.com/?q=..."
+                            onChange={(e) => setLocationUrl(e.target.value)}
+                        />
                     </div>
                     <div className="modal-actions">
                         <button type="button" onClick={onCancel} className="cancel-btn">Cancel</button>
