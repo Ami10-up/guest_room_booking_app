@@ -1,0 +1,16 @@
+[Unit]
+Description=ngrok tunnel for GuestRoom
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+ExecStart=/usr/local/bin/ngrok http 3000 --hostname=determinatively-humpiest-lannie.ngrok-free.dev
+Restart=on-failure
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=guestroom-ngrok
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,18 @@
+[Unit]
+Description=GuestRoom Backend (Node)
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/guestroom/express-backend
+EnvironmentFile=/opt/guestroom/express-backend/.env
+ExecStart=/usr/bin/node app.js
+Restart=on-failure
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=guestroom-backend
+
+[Install]
+WantedBy=multi-user.target
