@@ -1,4 +1,4 @@
-$Param(
+Param(
   [string]$AdminUser = "admin",
   [string]$AdminPass = "adminpass",
   [int]$Port = 8080,
