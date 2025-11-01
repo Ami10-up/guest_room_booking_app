@@ -13,6 +13,18 @@ const DIST_PATH = process.env.DIST_PATH || path.join(__dirname, '..', 'frontend'
 
 function basicAuth(req, res, next) {
   const auth = req.headers['authorization'] || '';
+  // Log presence of authorization header for debugging (do NOT log passwords)
+  if (auth) {
+    try {
+      const b64 = auth.split(' ')[1] || '';
+      const [user] = Buffer.from(b64, 'base64').toString().split(':');
+      console.log(`Basic auth header present. Username: ${user}`);
+    } catch (e) {
+      console.log('Error decoding auth header for debug');
+    }
+  } else {
+    console.log('No Authorization header present on request for', req.originalUrl);
+  }
   if (!auth.startsWith('Basic ')) {
     res.setHeader('WWW-Authenticate', 'Basic realm="Admin Area"');
     return res.status(401).send('Authentication required');
@@ -26,8 +38,13 @@ function basicAuth(req, res, next) {
 
 const app = express();
 
-// Apply basic auth to all routes served by this proxy (so admin UI and api proxy are protected)
-app.use(basicAuth);
+// Optionally disable Basic Auth (useful for debugging). Set DISABLE_BASIC_AUTH=true to skip protection.
+if (process.env.DISABLE_BASIC_AUTH !== 'true') {
+  // Apply basic auth to all routes served by this proxy (so admin UI and api proxy are protected)
+  app.use(basicAuth);
+} else {
+  console.log('DISABLE_BASIC_AUTH is true — admin proxy running without Basic Auth (debug mode)');
+}
 
 // Proxy API requests to backend
 app.use('/api', createProxyMiddleware({ target: BACKEND_URL, changeOrigin: true, secure: false }));
