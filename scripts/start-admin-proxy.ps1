@@ -1,9 +1,9 @@
-Param(
+$Param(
   [string]$AdminUser = "admin",
   [string]$AdminPass = "adminpass",
   [int]$Port = 8080,
   [string]$BackendUrl = "http://localhost:3000",
-  [string]$DistPath = "$(Resolve-Path "$(Join-Path (Split-Path -Parent $PSScriptRoot) 'frontend' 'dist')")"
+  [string]$DistPath = ""
 )
 
 Write-Host "Starting admin proxy..."
@@ -22,6 +22,19 @@ $env:ADMIN_USER = $AdminUser
 $env:ADMIN_PASS = $AdminPass
 $env:ADMIN_PROXY_PORT = $Port
 $env:BACKEND_URL = $BackendUrl
+
+# If DistPath not provided, try to compute it relative to repo root
+if ([string]::IsNullOrEmpty($DistPath)) {
+  $repoRoot = Split-Path -Parent $PSScriptRoot
+  $candidate = Join-Path $repoRoot 'frontend\dist'
+  if (Test-Path $candidate) {
+    $DistPath = (Resolve-Path $candidate).Path
+  } else {
+    Write-Host "Warning: $candidate not found. Using path value: $candidate" -ForegroundColor Yellow
+    $DistPath = $candidate
+  }
+}
+
 $env:DIST_PATH = $DistPath
 
 Write-Host "Admin proxy config: user=$AdminUser port=$Port backend=$BackendUrl dist=$DistPath"
